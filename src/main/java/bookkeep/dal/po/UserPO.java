@@ -1,11 +1,9 @@
-package bookkeep.dal;
+package bookkeep.dal.po;
 
-import java.util.List;
-
-import org.beetl.sql.core.TailBean;
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.Table;
 
+import bookkeep.dal.BasePO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @lombok.experimental.Accessors(chain = true)
 @Table(name = "user")
-public class UserPO extends TailBean {
+public class UserPO extends BasePO {
 
 	private static final long serialVersionUID = -895182587354751883L;
 	
@@ -25,5 +23,5 @@ public class UserPO extends TailBean {
 	private String name;
 	
 	private String phone;
-
+	
 }

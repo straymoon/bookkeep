@@ -6,7 +6,7 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://localhost:3306/bookkeep?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false
       username: root
-      password: 123456
+      password: root~!@#
       filters: stat,wall,log4j,config
       max-active: 100
       initial-size: 1
@@ -21,10 +21,14 @@ spring:
       pool-prepared-statements: true
       max-open-prepared-statements: 50
       max-pool-prepared-statement-per-connection-size: 20
-    beetlsql:
-      dbStyle: org.beetl.sql.core.db.MySqlStyle
-      sqlRoot: /sql
-      sqlPath: /sql
-      basePackage: bookkeep.dao
-      debug: 1
+      
+beetlsql:
+  dbStyle: org.beetl.sql.core.db.MySqlStyle
+  sqlPath: /sql
+  daoSuffix: 
+  basePackage: bookkeep.dao
+  debug: 1
+  
+server:
+  port: 2048
     
