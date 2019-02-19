@@ -1,12 +1,11 @@
-package bookkeep.dao;
+package bookkeep.dal.dao;
 
 import org.beetl.sql.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
-import bookkeep.dal.po.UserPO;
-
+import bookkeep.dal.BasePO;
 
 @Repository
-public interface UserMapper extends BaseMapper<UserPO>{
-	
+public interface BillMapper extends BaseMapper<BasePO>{
+
 }
