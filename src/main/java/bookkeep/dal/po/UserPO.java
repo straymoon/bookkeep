@@ -1,6 +1,6 @@
 package bookkeep.dal.po;
 
-import org.beetl.sql.core.annotatoin.AssignID;
+import org.beetl.sql.core.annotatoin.AutoID;
 import org.beetl.sql.core.annotatoin.Table;
 
 import bookkeep.dal.BasePO;
@@ -17,7 +17,7 @@ public class UserPO extends BasePO {
 
 	private static final long serialVersionUID = -895182587354751883L;
 	
-	@AssignID
+	@AutoID
 	private Integer id;
 	
 	private String name;

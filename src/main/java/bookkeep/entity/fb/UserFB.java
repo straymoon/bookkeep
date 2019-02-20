@@ -1,19 +1,12 @@
-/**
- * 
- */
-package bookkeep.entity;
+package bookkeep.entity.fb;
 
 import lombok.Data;
 
-/**
- * @author 星灵
- *
- */
 @Data
-public class User {
+public class UserFB {
 	
 	private Integer id;
-	
+
 	private String name;
 	
 	private String phone;
