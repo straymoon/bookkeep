@@ -1,4 +1,9 @@
+/**
+ * 
+ */
 package bookkeep.dal.po;
+
+import java.util.Date;
 
 import org.beetl.sql.core.annotatoin.AssignID;
 import org.beetl.sql.core.annotatoin.Table;
@@ -8,20 +13,29 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author 星灵
+ *
+ */
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @lombok.experimental.Accessors(chain = true)
-@Table(name = "bill")
-public class UserPO extends BasePO {
+@Table(name = "user")
+public class BillPO  extends BasePO {
 
-	private static final long serialVersionUID = -895182587354751883L;
+	private static final long serialVersionUID = 6611951066802262621L;
 	
-	@AssignID
-	private Integer id;
+	@AssignID("simple")
+	private Long id;
 	
-	private String name;
+	//地址
+	private String address;
 	
-	private String phone;
+	//时间
+	private Date workTime; 
+
+	//工作内容
+	private String work;
 	
 }
