@@ -46,17 +46,17 @@ public class UserService {
 	}
 	
 	@Transactional
-	public void creatBill(UserFB fb) {
+	public void creatUser(UserFB fb) {
 		
 		UserPO updatePO = new UserPO();
 		updatePO.setName(fb.getName());
 		updatePO.setPhone(fb.getPhone());
 
 		if(null != fb.getId()) {
-			//TODO 更新信息以及抛错
+			updatePO.updataTemplet();
 			userMapper.updateById(updatePO);
 		}else {
-			//TODO 创建信息以及抛错
+			updatePO.createTemplet();
 			userMapper.insert(updatePO);
 		}
 		

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.beetl.sql.core.engine.PageQuery;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,11 +51,30 @@ public class BillService {
 		PageQuery<BillPO> pageQuery = new PageQuery<BillPO>(pageNum, pageSize);
 		billMapper.templatePage(pageQuery);
 
-		List<Bill> users = new DefaultReformer<BillPO, Bill>(Bill.class).toVOs(pageQuery.getList());
+		List<Bill> bills = new DefaultReformer<BillPO, Bill>(Bill.class){
+			@Override
+			public Bill toVO(BillPO po) {
+				Bill vo = new Bill();
+				BeanUtils.copyProperties(po, vo);
+				
+				@SuppressWarnings("unchecked")
+				List<UserPO> userpos = (List<UserPO>) po.get("userPO");
+				List<String> users = null;
+				if(!ObjectUtils.isEmpty(userpos)) {
+					users = new ArrayList<String>(userpos.size());
+					for(UserPO user : userpos) {
+						users.add(user.getName());
+					}
+				}
+				vo.setUsers(users);
 
+				return vo;
+			};
+		}.toVOs(pageQuery.getList());
+		
 		PageData<Bill> result = new PageData<Bill>();
 		result.setTotalRow(pageQuery.getTotalRow());
-		result.setData(users);
+		result.setData(bills);
 
 		return result;
 	}
@@ -64,43 +84,71 @@ public class BillService {
 
 		List<String> users = fb.getUsers();
 		List<Integer> userIds = new ArrayList<Integer>();
-		
+		//工单用户列表，没有则创建
 		if (!ObjectUtils.isEmpty(users)) {
 			for (String name : users) {
 				UserPO userpo = userMapper.createLambdaQuery().andEq(UserPO::getName, name).single();
-				if(ObjectUtils.isEmpty(userpo)) {
+				if(!ObjectUtils.isEmpty(userpo)) {
 					userIds.add(userpo.getId());
 				}else {
-					UserPO newUser = new UserPO();
-					//TODO 创建初始化信息
-					newUser.setName(name);
-					userMapper.insert(newUser,true);
+					userpo = new UserPO();
 					
-					userIds.add(newUser.getId());
+					userpo.setName(name);
+					userpo.createTemplet();
+					userMapper.insert(userpo,true);
+					
+					userIds.add(userpo.getId());
 				}
 			}
 		}
 		
-		BillPO newBill = new BillPO();
-		//TODO 创建初始化信息
-		newBill.setAddress(fb.getAddress());
-		newBill.setWorkTime(fb.getWorkTime());
-		newBill.setWork(fb.getWork());
+		//工单信息创建
+		BillPO billPO = null;
+		Long billId = null;
 		
-		billMapper.insert(newBill, true);
+		if(null != fb.getId()) {
+			billPO = billMapper.single(fb.getId());
+		}
 		
-		Long billId = newBill.getId();
+		if(!ObjectUtils.isEmpty(billPO)) {
+			//更新工单信息
+			billPO.setAddress(fb.getAddress());
+			billPO.setWorkTime(fb.getWorkTime());
+			billPO.setWork(fb.getWork());
+			billPO.updataTemplet();
+			billMapper.updateTemplateById(billPO);
+			
+			billId = billPO.getId();
+		}else {
+			//创建工单信息
+			billPO = new BillPO();
+			billPO.setAddress(fb.getAddress());
+			billPO.setWorkTime(fb.getWorkTime());
+			billPO.setWork(fb.getWork());
+			billPO.createTemplet();
+			billMapper.insert(billPO, true);
+			
+			billId = billPO.getId();
+		}
 		
-		List<BillUserPO> billusers = new ArrayList<BillUserPO>();
+		//工单关联用户
 		for(Integer userId :userIds) {
 			BillUserPO billuser = new BillUserPO();
 			billuser.setBillId(billId);
 			billuser.setUserId(userId);
 			
-			billusers.add(billuser);
+			BillUserPO oldBillUser = billUserMapper.single(billuser);
+			
+			if(ObjectUtils.isEmpty(oldBillUser)) {
+				
+				billuser.createTemplet();
+				billUserMapper.insert(billuser);
+			}else {
+				//更新关联时间
+				billuser.updataTemplet();
+				billUserMapper.updateTemplateById(oldBillUser);
+			}
 		}
-		
-		billUserMapper.insertBatch(billusers);
 
 	}
 

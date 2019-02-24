@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @lombok.experimental.Accessors(chain = true)
-@Table(name = "bill")
+@Table(name = "user")
 public class UserPO extends BasePO {
 
 	private static final long serialVersionUID = -895182587354751883L;

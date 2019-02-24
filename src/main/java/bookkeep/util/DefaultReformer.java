@@ -18,13 +18,13 @@ public class DefaultReformer<PO, VO> {
 	
 	public VO toVO(PO po) {
 		try {
-			VO vo = (VO)voCls.newInstance();
+			VO vo = voCls.getDeclaredConstructor().newInstance();
 			BeanUtils.copyProperties(po, vo);
 			return vo;
 		} catch (Exception e) {
 			log.error("属性转换错误", e);
+			return null;
 		}
-		return null;
 	}
 	
 	public List<VO> toVOs(List<PO> pos) {
